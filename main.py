@@ -48,7 +48,7 @@ async def root():
 def create_kit(kit: schemas.KitCreate, db: Session = Depends(get_db)):
     return crud.create_kit(db=db, kit=kit)
 
-@app.get("/kit/", response_model=list[schemas.Kit])
+@app.get("/kit/", response_model=List[schemas.Kit])
 def read_kit(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return crud.get_kit(db, skip=skip, limit=limit)
 
@@ -59,7 +59,7 @@ def read_kit(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
 def create_cirurgia(cirurgia: schemas.CirurgiaCreate, db: Session = Depends(get_db)):
     return crud.create_cirurgia(db=db, cirurgia=cirurgia)
 
-@app.get("/cirurgia/", response_model=list[schemas.Cirurgia])
+@app.get("/cirurgia/", response_model=List[schemas.Cirurgia])
 def read_cirurgia(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return crud.get_cirurgia(db, skip=skip, limit=limit)
 
