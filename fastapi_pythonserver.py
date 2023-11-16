@@ -71,7 +71,7 @@ client = connect()
 
 @app.get("/")
 async def info():
-    return f"Send a POST request to / with an image Will publish results to topic {topic}"
+    return {"Send a POST request to / with an image Will publish results to topic":{topic}}
     
 @app.post("/")
 async def run(image: UploadFile = File(...)):
