@@ -22,9 +22,6 @@ ca = "certs/AmazonRootCA1.pem"
 cert = "certs/6f963f6ec45fbc59ebb98cf9df943424944b334aec0a18ce0f2e7f5d256530c9-certificate.pem.crt"
 private = "certs/6f963f6ec45fbc59ebb98cf9df943424944b334aec0a18ce0f2e7f5d256530c9-private.pem.key"
 
-# Global variable to track the publishing state
-publishing_enabled = True
-
 def ssl_alpn():
     try:
         ssl_context = ssl.create_default_context()
@@ -51,21 +48,22 @@ def connect():
     return client
 
 def publish(client, message):
-    global publishing_enabled
-    if publishing_enabled:
+    msg_count = 1
+    while True:
+        time.sleep(1)
         result = client.publish(topic, message, 0)
         status = result[0]
         if status == 0:
             print(f"Sent `{message}` to topic `{topic}`")
         else:
             print(f"Failed to send message to topic {topic}")
+        msg_count += 1
+        if msg_count > 50:
+            break
 
 def subscribe(client: mqtt_client):
     def on_message(client, userdata, msg):
-        global publishing_enabled
         print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
-        # Disable publishing after receiving a message
-        publishing_enabled = False
 
     client.subscribe(topic)
     client.on_message = on_message
@@ -83,21 +81,12 @@ async def read_item(request: Request):
 # Define a route to handle form submissions
 @app.post("/")
 async def process_form(request: Request, text_input: str = Form(...)):
-    global user_input, publishing_enabled
+    global user_input
     user_input = text_input
-    finished = False
 
     # Publish user input to MQTT broker
     mqtt_client = connect()
     publish(mqtt_client, user_input)
     mqtt_client.disconnect()
-    
-    time.sleep(20)
-    finished = True
-    
-    
-    # Re-enable publishing after a trigger (you can replace this condition with your trigger logic)
-    if finished == True:
-        publishing_enabled = True
 
     return templates.TemplateResponse("index.html", {"request": request, "user_input": user_input})
