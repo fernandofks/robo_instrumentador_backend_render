@@ -3,7 +3,6 @@ from fastapi import Depends, FastAPI, HTTPException, Request, Form
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List
-from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
 import ssl
 import time
