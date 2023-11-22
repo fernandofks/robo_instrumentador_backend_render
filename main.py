@@ -43,7 +43,7 @@ app.add_middleware(
 
 
 
-templates = Jinja2Templates(directory="templates")
+# templates = Jinja2Templates(directory="templates")
 
 # MQTT Broker configuration
 broker = "aspvpxjmfalxx-ats.iot.us-east-1.amazonaws.com"
