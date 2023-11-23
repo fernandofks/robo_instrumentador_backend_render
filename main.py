@@ -15,7 +15,6 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-
 # Dependency
 def get_db():
     db = SessionLocal()
@@ -31,19 +30,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-
-# @app.post("/users/", response_model=schemas.User)
-# def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
-#     db_user = crud.get_user_by_email(db, email=user.email)
-#     if db_user:
-#         raise HTTPException(status_code=400, detail="Email already registered")
-#     return crud.create_user(db=db, user=user)
-
-
-
-# templates = Jinja2Templates(directory="templates")
 
 # MQTT Broker configuration
 broker = "aspvpxjmfalxx-ats.iot.us-east-1.amazonaws.com"
@@ -91,21 +77,6 @@ def publish(client, message):
         print(f"Failed to send message to topic {topic}")
 
 
-
-# def publish(client, message):
-#     msg_count = 1
-#     while True:
-#         time.sleep(1)
-#         result = client.publish(topic, message, 0)
-#         status = result[0]
-#         if status == 0:
-#             print(f"Sent `{message}` to topic `{topic}`")
-#         else:
-#             print(f"Failed to send message to topic {topic}")
-#         msg_count += 1
-#         if msg_count > 50:
-#             break
-
 @app.get("/")
 async def root():
     return {"message": "hello world"}
@@ -118,8 +89,6 @@ def create_kit(kit: schemas.KitCreate, db: Session = Depends(get_db)):
 def read_kit(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return crud.get_kit(db, skip=skip, limit=limit)
 
-
-
 @app.post("/add_cirurgia/", response_model=schemas.Cirurgia)
 def create_cirurgia(cirurgia: schemas.CirurgiaCreate, db: Session = Depends(get_db)):
     return crud.create_cirurgia(db=db, cirurgia=cirurgia)
@@ -127,29 +96,6 @@ def create_cirurgia(cirurgia: schemas.CirurgiaCreate, db: Session = Depends(get_
 @app.get("/cirurgia/", response_model=List[schemas.Cirurgia])
 def read_cirurgia(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return crud.get_cirurgia(db, skip=skip, limit=limit)
-
-
-# @app.post("/envio_mqtt")
-# def process_form():
-#     user_input = "tesoura"
-#     # Publish user input to MQTT broker
-#     mqtt_client = connect()
-#     publish(mqtt_client, user_input)
-#     print("supostamente")
-#     mqtt_client.disconnect()
-#     return 0
-
-
-
-# @app.post("/e/")
-# def process_form(request: Request):
-#     argumento_envio = await request.json()
-#     print(argumento_envio["kit"])
-#     # Publish user input to MQTT broker
-#     mqtt_client = connect()
-#     publish(mqtt_client, argumento_envio["kit"])
-#     mqtt_client.disconnect()
-
 
 @app.post("/e/")
 async def process_form(request: Request):
@@ -163,29 +109,3 @@ async def process_form(request: Request):
         return {"status": "success"}
     except Exception as e:
         raise HTTPException(status_code=422, detail=str(e))
-
-
-
-# @app.get("/users/{user_id}", response_model=schemas.User)
-# def read_user(user_id: int, db: Session = Depends(get_db)):
-#     db_user = crud.get_user(db, user_id=user_id)
-#     if db_user is None:
-#         raise HTTPException(status_code=404, detail="User not found")
-#     return db_user
-
-
-# @app.post("/users/{user_id}/items/", response_model=schemas.Item)
-# def create_item_for_user(
-#     user_id: int, item: schemas.ItemCreate, db: Session = Depends(get_db)
-# ):
-#     return crud.create_user_item(db=db, item=item, user_id=user_id)
-
-
-# @app.get("/items/", response_model=list[schemas.Item])
-# def read_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-#     items = crud.get_items(db, skip=skip, limit=limit)
-#     return items
-
-
-
-
